@@ -117,6 +117,18 @@ h3 { font-size: 16px; font-weight: 600; }
 .starter { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: var(--warn-bg); color: var(--warn-ink); vertical-align: middle; }
 .empty { padding: 20px; border-radius: 14px; border: 1px dashed var(--line); color: var(--ink-2); display: grid; gap: 6px; }
 .empty h3 { color: var(--ink); }
+.fig { margin: 4px 0 0; display: grid; gap: 6px; }
+.fig-btn { border: 0; padding: 0; background: #fff; border-radius: 10px; overflow: hidden; cursor: zoom-in; display: block; max-width: 100%; justify-self: start; box-shadow: 0 0 0 1px var(--line); }
+.fig img { display: block; max-width: 100%; height: auto; max-height: 420px; object-fit: contain; }
+.fig figcaption { font-size: 13px; color: var(--ink-2); }
+.examples { display: grid; gap: 8px; margin-top: 4px; }
+.ex { background: var(--panel-2); border-radius: 10px; padding: 10px 14px; }
+.ex summary { cursor: pointer; font-weight: 600; font-size: 15px; }
+.ex p { margin: 8px 0 0; font-family: var(--mono); font-size: 13.5px; line-height: 1.5; }
+.lightbox { position: fixed; inset: 0; z-index: 50; background: rgba(8,12,16,.92); display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); overflow: auto; }
+.lightbox img { max-width: 100%; max-height: calc(100vh - 90px); background: #fff; border-radius: 8px; touch-action: pinch-zoom; }
+.lightbox p { color: #e7ecf1; font-size: 14px; margin: 10px 0 0; text-align: center; }
+.lightbox button { position: absolute; top: max(12px, env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); border: 0; background: rgba(255,255,255,.15); color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 22px; }
 
 /* Today */
 .classes { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
@@ -336,6 +348,8 @@ function renderSubject() {
         ${(sec.points || []).length ? `<ul>${sec.points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}
         ${(sec.formulas || []).map((f) => `<div class="formula">${esc(f)}</div>`).join("")}
         ${(sec.terms || []).length ? `<div class="terms">${sec.terms.map((t) => `<div><b>${esc(t.term)}:</b> ${esc(t.def || "")}</div>`).join("")}</div>` : ""}
+        ${(sec.images || []).map((im) => `<figure class="fig"><button class="fig-btn" data-zoom="${esc(im.src)}" data-cap="${esc(im.caption || "")}" aria-label="Enlarge image"><img src="${esc(im.src)}" alt="${esc(im.caption || "")}" loading="lazy"></button>${im.caption ? `<figcaption>${esc(im.caption)}</figcaption>` : ""}</figure>`).join("")}
+        ${(sec.examples || []).length ? `<div class="examples"><span class="label">Worked examples</span>${sec.examples.map((x) => `<details class="ex"><summary>${esc(x.q)}</summary><p>${esc(x.a)}</p></details>`).join("")}</div>` : ""}
       </details>`).join("")}</div>
     ${(d.sources || []).length ? `<p class="muted" style="font-size:13px;margin:0">Sources: ${d.sources.map((x) => esc(x.name || x)).join(" · ")}</p>` : ""}`;
 }
@@ -411,6 +425,12 @@ const rerender = () => { const y = $("#main").scrollTop, wy = window.scrollY; re
 document.addEventListener("click", (e) => {
   const t = e.target.closest("button"); if (!t) return;
   const d = t.dataset;
+  if (d.zoom) {
+    const lb = document.createElement("div"); lb.className = "lightbox";
+    lb.innerHTML = `<div><img src="${esc(d.zoom)}" alt="${esc(d.cap)}">${d.cap ? `<p>${esc(d.cap)}</p>` : ""}</div><button aria-label="Close">×</button>`;
+    lb.addEventListener("click", (ev) => { if (ev.target === lb || ev.target.closest("button")) lb.remove(); });
+    document.body.appendChild(lb); return;
+  }
   if (d.go) { if (d.go.startsWith("s-")) st.mode = "summary"; go(d.go); return; }
   if (d.mode) { st.mode = d.mode; rerender(); return; }
   if (d.scope) { st.scope = d.scope; store.set("scope", st.scope); if (st.view === "cards") buildDeck(); else newQuiz(st.scope); rerender(); return; }

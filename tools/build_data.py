@@ -31,6 +31,8 @@ def main():
             "cards": load(d, f"decks__{sid}.json").get("cards", []),
             "questions": load(d, f"quizzes__{sid}.json").get("questions", []),
         }
+    stamps = [x["updatedAt"] for x in data["subjects"].values() if x.get("updatedAt")] + ([data["generatedAt"]] if data["generatedAt"] else [])
+    data["generatedAt"] = max(stamps) if stamps else None
     json.dump(data, open(out, "w"), ensure_ascii=False, separators=(",", ":"))
     print("wrote", out, os.path.getsize(out), "bytes")
 
