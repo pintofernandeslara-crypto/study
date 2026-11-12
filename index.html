@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FHNW Study</title>
+<meta name="description" content="Summaries, flashcards and quizzes for FHNW semester 1.">
+<meta name="theme-color" content="#14344f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="FHNW Study">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/favicon-32.png">
+<style>
+/* Layout: phone = header + content + bottom tab bar; Mac (≥900px) = left sidebar (views + subjects) + content. Native system type. */
+:root {
+  --bg: #f4f6f8;
+  --panel: #ffffff;
+  --panel-2: #eaeef2;
+  --ink: #15202b;
+  --ink-2: #5a6774;
+  --line: #d9dfe5;
+  --brand: #14344f;
+  --brand-ink: #ffffff;
+  --accent: #2c6ea3;
+  --good: #1e7a50; --good-bg: #e1f2e9;
+  --bad: #b03a34;  --bad-bg: #f8e3e1;
+  --warn-bg: #fbf1d9; --warn-ink: #7a5200;
+  --s-fin: #2f6fa8; --s-ob: #8a4fa3; --s-ct: #c0602a; --s-math: #2b8a7a; --s-pm: #a83c5a;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-round: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --tabbar-h: 58px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #0f1419; --panel: #182029; --panel-2: #222c37; --ink: #e7ecf1; --ink-2: #98a5b3; --line: #2c3845;
+  --brand: #6fb0e2; --brand-ink: #0b1622; --accent: #6fb0e2;
+  --good: #6fd2a1; --good-bg: #163326; --bad: #f19590; --bad-bg: #3a1d1b; --warn-bg: #3a2f14; --warn-ink: #f2cd7a;
+  --s-fin: #6ea9dc; --s-ob: #c18fd8; --s-ct: #ee9a67; --s-math: #63c7b5; --s-pm: #e483a0;
+  color-scheme: dark; } }
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+[hidden] { display: none !important; }
+h1, h2, h3 { margin: 0; line-height: 1.2; text-wrap: balance; }
+h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 16px; font-weight: 600; }
+.label { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+.muted { color: var(--ink-2); }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex: none; }
+
+/* Shell */
+.app { min-height: 100%; display: grid; grid-template-columns: 1fr; }
+.sidebar { display: none; }
+.main { min-width: 0; padding-top: env(safe-area-inset-top, 0px); padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px) + 24px); }
+.page { max-width: 760px; margin: 0 auto; padding-block: 20px 8px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 20px; }
+.page-head { display: grid; gap: 4px; }
+.back { display: inline-flex; align-items: center; gap: 4px; border: 0; background: none; color: var(--accent); padding: 0; font-weight: 500; justify-self: start; }
+
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: grid; grid-template-columns: repeat(4, 1fr); background: color-mix(in srgb, var(--panel) 88%, transparent); backdrop-filter: saturate(1.6) blur(18px); -webkit-backdrop-filter: saturate(1.6) blur(18px); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.tab { height: var(--tabbar-h); border: 0; background: none; display: grid; justify-items: center; align-content: center; gap: 2px; font-size: 11px; font-weight: 500; color: var(--ink-2); }
+.tab svg { width: 24px; height: 24px; }
+.tab[aria-current="page"] { color: var(--accent); }
+
+@media (min-width: 900px) {
+  .app { grid-template-columns: 264px minmax(0, 1fr); height: 100%; }
+  .sidebar { display: flex; flex-direction: column; gap: 22px; background: var(--panel); border-right: 1px solid var(--line); padding: 28px 14px; overflow-y: auto; }
+  .main { overflow-y: auto; padding-bottom: 40px; }
+  .tabbar { display: none; }
+  .page { padding-block: 36px 24px; padding-left: 40px; padding-right: 40px; }
+  .back { display: none; }
+}
+.brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+.brand img { width: 30px; height: 30px; border-radius: 7px; }
+.brand b { font-size: 15px; }
+.brand span { display: block; font-size: 12px; color: var(--ink-2); }
+.nav { display: grid; gap: 2px; }
+.nav .label { padding: 0 10px 6px; }
+.nav-item { display: flex; align-items: center; gap: 10px; border: 0; background: none; text-align: left; padding: 8px 10px; border-radius: 8px; font-size: 14px; font-weight: 500; }
+.nav-item svg { width: 18px; height: 18px; color: var(--ink-2); }
+.nav-item:hover { background: var(--panel-2); }
+.nav-item[aria-current="page"] { background: var(--brand); color: var(--brand-ink); }
+.nav-item[aria-current="page"] svg { color: var(--brand-ink); }
+.nav-item .n { margin-left: auto; font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.nav-item[aria-current="page"] .n { color: inherit; opacity: .8; }
+.side-foot { margin-top: auto; font-size: 12px; color: var(--ink-2); padding: 0 10px; }
+
+/* Shared blocks */
+.group { background: var(--panel); border-radius: 14px; overflow: hidden; }
+.row { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border: 0; background: none; width: 100%; text-align: left; }
+.row + .row { border-top: 1px solid var(--line); }
+.row .grow { flex: 1; min-width: 0; }
+.row .sub { font-size: 13px; color: var(--ink-2); }
+.chev { color: var(--ink-2); flex: none; }
+.bar { height: 5px; border-radius: 3px; background: var(--panel-2); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--c, var(--accent)); }
+.btn { border: 0; border-radius: 10px; padding: 11px 16px; font-weight: 600; font-size: 15px; background: var(--panel-2); }
+.btn.primary { background: var(--brand); color: var(--brand-ink); }
+.btn.good { background: var(--good-bg); color: var(--good); }
+.btn.bad { background: var(--bad-bg); color: var(--bad); }
+.btn:disabled { opacity: .45; cursor: default; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 7px 13px; font-size: 14px; font-weight: 500; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: var(--panel-2); border-radius: 10px; padding: 3px; }
+.seg button { border: 0; background: none; border-radius: 8px; padding: 7px 10px; font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.seg button[aria-pressed="true"] { background: var(--panel); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.starter { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: var(--warn-bg); color: var(--warn-ink); vertical-align: middle; }
+.empty { padding: 20px; border-radius: 14px; border: 1px dashed var(--line); color: var(--ink-2); display: grid; gap: 6px; }
+.empty h3 { color: var(--ink); }
+
+/* Today */
+.classes { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.class { background: var(--panel); border-radius: 14px; padding: 14px 16px; display: grid; gap: 4px; border-left: 4px solid var(--c); }
+.class time { font-family: var(--mono); font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.stat { background: var(--panel); border-radius: 14px; padding: 14px 16px; }
+.stat b { display: block; font-family: var(--font-round); font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.stat span { display: block; font-size: 13px; line-height: 1.3; margin-top: 4px; color: var(--ink-2); }
+.nav-item[aria-current="page"] .dot { box-shadow: 0 0 0 2px var(--brand-ink); }
+
+/* Summary */
+.summary { display: grid; gap: 14px; }
+.sec { background: var(--panel); border-radius: 14px; padding: 16px 18px; display: grid; gap: 8px; }
+.sec .src { font-size: 12px; color: var(--ink-2); }
+.sec ul { margin: 0; padding-left: 20px; display: grid; gap: 5px; }
+.formula { font-family: var(--mono); font-size: 13.5px; background: var(--panel-2); padding: 8px 12px; border-radius: 8px; overflow-x: auto; white-space: pre; }
+.terms { display: grid; gap: 4px; font-size: 14px; }
+.terms div b { font-weight: 600; }
+details.sec summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 10px; }
+details.sec summary::-webkit-details-marker { display: none; }
+details.sec summary .chev { margin-left: auto; transition: transform .2s; }
+details.sec[open] summary .chev { transform: rotate(90deg); }
+
+/* Flashcard */
+.stage { perspective: 1400px; }
+.card { position: relative; width: 100%; min-height: 240px; border: 0; padding: 0; background: none; text-align: left; transform-style: preserve-3d; transition: transform .45s cubic-bezier(.2,.7,.2,1); touch-action: pan-y; }
+.card.flipped { transform: rotateY(180deg); }
+.face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 18px; padding: 24px; display: grid; align-content: center; gap: 12px; background: var(--panel); box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(20,52,79,.08); border-top: 5px solid var(--c); }
+.face.back { transform: rotateY(180deg); }
+.face .q { font-size: clamp(19px, 4.6vw, 24px); font-weight: 600; line-height: 1.3; }
+.face .a { font-size: 17px; white-space: pre-line; }
+.face .hint { position: absolute; bottom: 14px; right: 18px; font-size: 12px; color: var(--ink-2); }
+.card-nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.judge { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* Quiz */
+.opts { display: grid; gap: 10px; }
+.opt { text-align: left; border: 1.5px solid var(--line); background: var(--panel); border-radius: 12px; padding: 13px 15px; display: flex; gap: 12px; align-items: baseline; font-size: 15.5px; }
+.opt .k { font-family: var(--mono); font-size: 13px; color: var(--ink-2); flex: none; }
+.opt.right { border-color: var(--good); background: var(--good-bg); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-bg); }
+.opt:disabled { cursor: default; }
+.explain { background: var(--panel); border-radius: 12px; padding: 14px 16px; font-size: 15px; }
+.big { font-family: var(--font-round); font-size: 56px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+
+.install { background: var(--panel); border-radius: 14px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; }
+.install img { width: 36px; height: 36px; border-radius: 8px; flex: none; }
+.install button { margin-left: auto; border: 0; background: none; color: var(--ink-2); font-size: 20px; line-height: 1; padding: 0 4px; }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } details.sec summary .chev { transition: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="Navigation">
+    <div class="brand"><img src="icons/icon-192.png" alt=""><div><b>FHNW Study</b><span>Semester 1 · Autumn 2026</span></div></div>
+    <nav class="nav" id="side-views"></nav>
+    <nav class="nav" id="side-subjects"><span class="label">Subjects</span></nav>
+    <div class="side-foot" id="side-foot"></div>
+  </aside>
+  <main class="main" id="main"></main>
+  <nav class="tabbar" id="tabbar" aria-label="Sections"></nav>
+</div>
+
+<script>
+const SUBJECTS = [
+  { id: "financial-accounting", name: "Financial Accounting", short: "Fin. Accounting", color: "--s-fin" },
+  { id: "organisational-behaviour", name: "Organisational Behaviour", short: "Org. Behaviour", color: "--s-ob" },
+  { id: "critical-thinking", name: "Critical Thinking", short: "Critical Thinking", color: "--s-ct" },
+  { id: "math", name: "Math", short: "Math", color: "--s-math" },
+  { id: "principles-of-management", name: "Principles of Management", short: "Principles of Mgmt", color: "--s-pm" },
+];
+// Swiss time, weekday 0 = Sunday
+const SCHEDULE = {
+  1: [["08:00", "12:00", "financial-accounting"], ["13:00", "15:00", "organisational-behaviour"], ["15:30", "19:00", "critical-thinking"]],
+  3: [["17:30", "19:00", "math"]],
+  4: [["17:30", "21:00", "principles-of-management"]],
+};
+const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const ICONS = {
+  today: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+  subjects: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h10.5a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10.5"/></svg>',
+  cards: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="14" height="11" rx="2.5"/><path d="M7 8V6.5A2.5 2.5 0 0 1 9.5 4h9A2.5 2.5 0 0 1 21 6.5v7a2.5 2.5 0 0 1-2.5 2.5H17"/></svg>',
+  quiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4M12 16.8v.2"/></svg>',
+  chev: '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>',
+};
+const VIEWS = [["today", "Today"], ["subjects", "Subjects"], ["cards", "Flashcards"], ["quiz", "Quiz"]];
+
+/* ---------- storage ---------- */
+const store = (() => {
+  const K = "fhnw-study-v1"; let s = {};
+  try { s = JSON.parse(localStorage.getItem(K) || "{}"); } catch (e) {}
+  return { get: (k, d) => (k in s ? s[k] : d), set: (k, v) => { s[k] = v; try { localStorage.setItem(K, JSON.stringify(s)); } catch (e) {} } };
+})();
+const known = () => store.get("known", {});
+const best = () => store.get("best", {});
+
+/* ---------- state ---------- */
+let DATA = null;
+const st = {
+  view: "today", subject: null, mode: "summary",
+  scope: store.get("scope", "all"), filter: store.get("filter", "review"),
+  deck: [], i: 0, flipped: false, quiz: null,
+};
+
+const $ = (s) => document.querySelector(s);
+const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const subj = (id) => SUBJECTS.find((s) => s.id === id);
+const sdata = (id) => (DATA && DATA.subjects[id]) || { summary: [], cards: [], questions: [] };
+const fmtDate = (iso) => { if (!iso) return "—"; const d = new Date(iso); return isNaN(d) ? "—" : d.toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" }); };
+const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function zurichNow() {
+  const p = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Zurich", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date());
+  const g = (t) => p.find((x) => x.type === t)?.value;
+  return { dow: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(g("weekday")), min: (+g("hour") % 24) * 60 + +g("minute") };
+}
+const cardsIn = (scope) => scope === "all" ? SUBJECTS.flatMap((s) => sdata(s.id).cards.map((c) => ({ ...c, sid: s.id }))) : sdata(scope).cards.map((c) => ({ ...c, sid: scope }));
+const qsIn = (scope) => scope === "all" ? SUBJECTS.flatMap((s) => sdata(s.id).questions.map((q) => ({ ...q, sid: s.id }))) : sdata(scope).questions.map((q) => ({ ...q, sid: scope }));
+
+/* ---------- routing (#today, #subjects, #s-<id>, #cards, #quiz) ---------- */
+function go(hash) { if (location.hash !== "#" + hash) location.hash = hash; else route(); }
+function route() {
+  const h = location.hash.slice(1) || "today";
+  if (h.startsWith("s-") && subj(h.slice(2))) { st.view = "subject"; st.subject = h.slice(2); }
+  else if (["today", "subjects", "cards", "quiz"].includes(h)) { st.view = h; }
+  else st.view = "today";
+  if (st.view === "cards") buildDeck();
+  if (st.view === "quiz" && (!st.quiz || st.quiz.scope !== st.scope)) newQuiz(st.scope);
+  render();
+  $("#main").scrollTop = 0; window.scrollTo(0, 0);
+}
+
+/* ---------- chrome ---------- */
+function renderChrome() {
+  const active = st.view === "subject" ? "subjects" : st.view;
+  $("#tabbar").innerHTML = VIEWS.map(([v, l]) => `<button class="tab" data-go="${v}" ${active === v ? 'aria-current="page"' : ""}>${ICONS[v]}<span>${l}</span></button>`).join("");
+  $("#side-views").innerHTML = VIEWS.filter(([v]) => v !== "subjects").map(([v, l]) => `<button class="nav-item" data-go="${v}" ${st.view === v ? 'aria-current="page"' : ""}>${ICONS[v]}${l}</button>`).join("");
+  $("#side-subjects").innerHTML = `<span class="label">Subjects</span>` + SUBJECTS.map((s) => `<button class="nav-item" data-go="s-${s.id}" ${st.view === "subject" && st.subject === s.id ? 'aria-current="page"' : ""}><span class="dot" style="--c:var(${s.color})"></span>${esc(s.name)}<span class="n">${sdata(s.id).cards.length}</span></button>`).join("");
+  $("#side-foot").textContent = DATA ? `Updated ${fmtDate(DATA.generatedAt)}` : "";
+}
+
+/* ---------- views ---------- */
+function renderToday() {
+  const now = zurichNow();
+  const today = SCHEDULE[now.dow] || [];
+  let next = null;
+  for (let d = 1; d <= 7 && !next; d++) { const dow = (now.dow + d) % 7; if (SCHEDULE[dow]) next = { dow, list: SCHEDULE[dow] }; }
+  const all = cardsIn("all"); const k = known();
+  const nKnown = all.filter((c) => k[c.id]).length;
+  const b = best(); const bestVals = Object.values(b);
+  const avgBest = bestVals.length ? Math.round(bestVals.reduce((a, x) => a + x, 0) / bestVals.length) : null;
+  const dateStr = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Zurich" });
+  return `
+    <div class="page-head"><span class="label">${esc(dateStr)}</span><h1>Today</h1></div>
+    ${installHint()}
+    <section style="display:grid;gap:10px">
+      <h2>${today.length ? "Classes today" : "No classes today"}</h2>
+      ${today.length ? `<div class="classes">${today.map(([a, z, id]) => classTile(a, z, id)).join("")}</div>
+        <p class="muted" style="margin:0">New notes from today are added after 21:55.</p>`
+      : next ? `<div class="classes">${next.list.map(([a, z, id]) => classTile(a, z, id, DAYS[next.dow])).join("")}</div>` : ""}
+    </section>
+    <section class="stats">
+      <div class="stat"><b>${all.length - nKnown}</b><span>cards to review</span></div>
+      <div class="stat"><b>${nKnown}</b><span>cards known</span></div>
+      <div class="stat"><b>${avgBest === null ? "–" : avgBest + "%"}</b><span>average best quiz</span></div>
+    </section>
+    <div class="actions">
+      <button class="btn primary" data-act="review-all">Review ${all.length - nKnown} cards</button>
+      <button class="btn" data-act="quiz-all">Mixed quiz</button>
+    </div>
+    <section style="display:grid;gap:10px">
+      <h2>Progress</h2>
+      <div class="group">${SUBJECTS.map((s) => progressRow(s)).join("")}</div>
+    </section>`;
+}
+function classTile(a, z, id, day) {
+  const s = subj(id);
+  return `<button class="class" data-go="s-${id}" style="--c:var(${s.color});border-top:0;border-right:0;border-bottom:0;text-align:left">
+    <time>${day ? day + " · " : ""}${a}–${z}</time><h3>${esc(s.name)}</h3></button>`;
+}
+function progressRow(s) {
+  const cs = sdata(s.id).cards; const k = known();
+  const n = cs.filter((c) => k[c.id]).length; const pct = cs.length ? Math.round((n / cs.length) * 100) : 0;
+  const bq = best()[s.id];
+  return `<button class="row" data-go="s-${s.id}" style="--c:var(${s.color})">
+    <span class="dot"></span>
+    <span class="grow"><span style="display:flex;justify-content:space-between;gap:8px"><b style="font-weight:600">${esc(s.name)}</b><span class="sub">${n}/${cs.length}${bq !== undefined ? " · quiz " + bq + "%" : ""}</span></span>
+    <span class="bar" style="display:block;margin-top:6px"><i style="width:${pct}%"></i></span></span>${ICONS.chev}</button>`;
+}
+function installHint() {
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  if (standalone || store.get("hideInstall", false)) return "";
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const mac = /Macintosh/.test(navigator.userAgent) && !("ontouchend" in document);
+  const how = ios ? "In Safari, tap Share, then <b>Add to Home Screen</b>." : mac ? "In Safari choose File → <b>Add to Dock</b>, or in Chrome click the install icon in the address bar." : "Use your browser's <b>Install app</b> or <b>Add to Home screen</b> option.";
+  return `<div class="install"><img src="icons/icon-192.png" alt=""><div><b>Install FHNW Study</b><br><span class="muted">${how} It then opens like an app and works offline.</span></div><button data-act="hide-install" aria-label="Dismiss">×</button></div>`;
+}
+
+function renderSubjects() {
+  return `<div class="page-head"><span class="label">Semester 1</span><h1>Subjects</h1></div>
+    <div class="group">${SUBJECTS.map((s) => { const d = sdata(s.id); return `<button class="row" data-go="s-${s.id}" style="--c:var(${s.color})"><span class="dot"></span><span class="grow"><b style="font-weight:600">${esc(s.name)}</b><br><span class="sub">${d.summary.length} topics · ${d.cards.length} cards · ${d.questions.length} questions</span></span>${ICONS.chev}</button>`; }).join("")}</div>`;
+}
+
+function renderSubject() {
+  const s = subj(st.subject); const d = sdata(s.id);
+  const head = `<button class="back" data-go="subjects">‹ Subjects</button>
+    <div class="page-head"><span class="label" style="display:flex;align-items:center;gap:8px"><span class="dot" style="--c:var(${s.color})"></span>Updated ${fmtDate(d.updatedAt)}</span><h1>${esc(s.name)}</h1></div>
+    <div class="seg" role="group" aria-label="Study mode">${[["summary", "Summary"], ["cards", "Cards"], ["quiz", "Quiz"]].map(([m, l]) => `<button data-mode="${m}" aria-pressed="${st.mode === m}">${l}</button>`).join("")}</div>`;
+  if (st.mode === "cards") { if (st.deckScope !== s.id) { st.scope = s.id; buildDeck(); } return head + cardsBody(); }
+  if (st.mode === "quiz") { if (!st.quiz || st.quiz.scope !== s.id) newQuiz(s.id); return head + quizBody(); }
+  if (!d.summary.length) return head + `<div class="empty"><h3>No summary yet</h3><p style="margin:0">It appears after the next update reads this subject's files.</p></div>`;
+  return head + `${d.overview ? `<p style="margin:0" class="muted">${esc(d.overview)}</p>` : ""}
+    <div class="summary">${d.summary.map((sec, i) => `
+      <details class="sec" ${i === 0 ? "open" : ""}>
+        <summary><h3>${esc(sec.heading)} ${sec.starter ? '<span class="starter">Starter</span>' : ""}</h3>${ICONS.chev}</summary>
+        ${sec.source ? `<span class="src">${esc(sec.source)}${sec.date ? " · " + esc(sec.date) : ""}</span>` : ""}
+        ${(sec.points || []).length ? `<ul>${sec.points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}
+        ${(sec.formulas || []).map((f) => `<div class="formula">${esc(f)}</div>`).join("")}
+        ${(sec.terms || []).length ? `<div class="terms">${sec.terms.map((t) => `<div><b>${esc(t.term)}:</b> ${esc(t.def || "")}</div>`).join("")}</div>` : ""}
+      </details>`).join("")}</div>
+    ${(d.sources || []).length ? `<p class="muted" style="font-size:13px;margin:0">Sources: ${d.sources.map((x) => esc(x.name || x)).join(" · ")}</p>` : ""}`;
+}
+
+function scopeChips() {
+  return `<div class="chips">${[["all", "All subjects"]].concat(SUBJECTS.map((s) => [s.id, s.short])).map(([id, l]) => `<button class="chip" data-scope="${id}" aria-pressed="${st.scope === id}">${id !== "all" ? `<span class="dot" style="--c:var(${subj(id).color})"></span>` : ""}${esc(l)}</button>`).join("")}</div>`;
+}
+
+function buildDeck() {
+  const k = known();
+  let list = cardsIn(st.scope);
+  if (st.filter === "review") list = list.filter((c) => !k[c.id]);
+  st.deck = shuffle(list); st.deckScope = st.scope; st.i = 0; st.flipped = false;
+}
+function renderCards() {
+  return `<div class="page-head"><span class="label">Spaced review</span><h1>Flashcards</h1></div>${scopeChips()}${cardsBody()}`;
+}
+function cardsBody() {
+  const all = cardsIn(st.scope); const k = known();
+  const nKnown = all.filter((c) => k[c.id]).length;
+  if (!all.length) return `<div class="empty"><h3>No cards yet</h3></div>`;
+  const c = st.deck[st.i];
+  const filterSeg = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+    <div class="seg" style="min-width:220px"><button data-filter="review" aria-pressed="${st.filter === "review"}">To review ${all.length - nKnown}</button><button data-filter="all" aria-pressed="${st.filter === "all"}">All ${all.length}</button></div>
+    <button class="btn" data-act="shuffle" style="padding:8px 12px;font-size:14px">Shuffle</button></div>`;
+  if (!c) return filterSeg + `<div class="empty"><h3>All caught up</h3><p style="margin:0">You know every card here. Switch to “All” to go through them again.</p><div><button class="btn" data-act="reset">Reset progress for these cards</button></div></div>`;
+  const s = subj(c.sid);
+  return filterSeg + `
+    <div class="stage">
+      <button class="card${st.flipped ? " flipped" : ""}" id="card" aria-label="Flip card" style="--c:var(${s.color})">
+        <div class="face"><span class="label">${esc(s.short)} · ${esc(c.topic || "")} ${c.starter ? '<span class="starter">Starter</span>' : ""}</span><div class="q">${esc(c.q)}</div><span class="hint">Tap to flip</span></div>
+        <div class="face back"><span class="label">Answer</span><div class="a">${esc(c.a)}</div></div>
+      </button>
+    </div>
+    <div class="card-nav">
+      <button class="btn" data-act="prev" ${st.i === 0 ? "disabled" : ""}>‹ Back</button>
+      <span class="muted" style="font-variant-numeric:tabular-nums">${st.i + 1} / ${st.deck.length}</span>
+      <button class="btn" data-act="next" ${st.i >= st.deck.length - 1 ? "disabled" : ""}>Skip ›</button>
+    </div>
+    <div class="judge"><button class="btn bad" data-act="again">Review again</button><button class="btn good" data-act="know">I know this</button></div>`;
+}
+
+function newQuiz(scope) { st.quiz = { scope, qs: shuffle(qsIn(scope)).slice(0, 10), i: 0, picked: null, score: 0 }; }
+function renderQuiz() {
+  return `<div class="page-head"><span class="label">Test yourself</span><h1>Quiz</h1></div>${scopeChips()}${quizBody()}`;
+}
+function quizBody() {
+  const z = st.quiz;
+  if (!z || !z.qs.length) return `<div class="empty"><h3>No questions yet</h3></div>`;
+  if (z.i >= z.qs.length) {
+    const pct = Math.round((z.score / z.qs.length) * 100); const b = best();
+    if (z.scope !== "all" && (b[z.scope] === undefined || pct > b[z.scope])) { b[z.scope] = pct; store.set("best", b); }
+    return `<div class="sec" style="justify-items:start;gap:12px"><span class="label">Result</span><div class="big">${z.score}/${z.qs.length}</div>
+      <p class="muted" style="margin:0">${pct}%${z.scope !== "all" ? ` · best ${best()[z.scope]}%` : ""}. Each round draws up to 10 random questions.</p>
+      <button class="btn primary" data-act="new-quiz">New round</button></div>`;
+  }
+  const q = z.qs[z.i]; const s = subj(q.sid); const answered = z.picked !== null;
+  return `<div class="bar" style="--c:var(${s.color})"><i style="width:${(z.i / z.qs.length) * 100}%"></i></div>
+    <div style="display:grid;gap:6px"><span class="label">${esc(s.short)} · Question ${z.i + 1} of ${z.qs.length} · Score ${z.score} ${q.starter ? '<span class="starter">Starter</span>' : ""}</span><h2 style="font-weight:600">${esc(q.q)}</h2></div>
+    <div class="opts">${q.options.map((o, i) => { let c = "opt"; if (answered && i === q.answer) c += " right"; else if (answered && i === z.picked) c += " wrong"; return `<button class="${c}" data-opt="${i}" ${answered ? "disabled" : ""}><span class="k">${"ABCDEF"[i]}</span><span>${esc(o)}</span></button>`; }).join("")}</div>
+    ${answered ? `<div class="explain"><b>${z.picked === q.answer ? "Correct." : "Not quite."}</b> ${esc(q.explain || "")}</div><div><button class="btn primary" data-act="next-q">${z.i === z.qs.length - 1 ? "See result" : "Next question"}</button></div>` : ""}`;
+}
+
+function render() {
+  renderChrome();
+  if (!DATA) { $("#main").innerHTML = `<div class="page"><div class="empty"><h3>Loading your study material…</h3></div></div>`; return; }
+  const body = { today: renderToday, subjects: renderSubjects, subject: renderSubject, cards: renderCards, quiz: renderQuiz }[st.view]();
+  $("#main").innerHTML = `<div class="page">${body}</div>`;
+}
+const rerender = () => { const y = $("#main").scrollTop, wy = window.scrollY; render(); $("#main").scrollTop = y; window.scrollTo(0, wy); };
+
+/* ---------- events ---------- */
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("button"); if (!t) return;
+  const d = t.dataset;
+  if (d.go) { if (d.go.startsWith("s-")) st.mode = "summary"; go(d.go); return; }
+  if (d.mode) { st.mode = d.mode; rerender(); return; }
+  if (d.scope) { st.scope = d.scope; store.set("scope", st.scope); if (st.view === "cards") buildDeck(); else newQuiz(st.scope); rerender(); return; }
+  if (d.filter) { st.filter = d.filter; store.set("filter", st.filter); buildDeck(); rerender(); return; }
+  if (d.opt !== undefined) { const z = st.quiz; z.picked = +d.opt; if (z.picked === z.qs[z.i].answer) z.score++; rerender(); return; }
+  if (t.id === "card") { st.flipped = !st.flipped; t.classList.toggle("flipped", st.flipped); return; }
+  switch (d.act) {
+    case "review-all": st.scope = "all"; st.filter = "review"; store.set("scope", "all"); store.set("filter", "review"); go("cards"); break;
+    case "quiz-all": st.scope = "all"; store.set("scope", "all"); newQuiz("all"); go("quiz"); break;
+    case "hide-install": store.set("hideInstall", true); rerender(); break;
+    case "shuffle": buildDeck(); rerender(); break;
+    case "prev": st.i = Math.max(0, st.i - 1); st.flipped = false; rerender(); break;
+    case "next": st.i = Math.min(st.deck.length - 1, st.i + 1); st.flipped = false; rerender(); break;
+    case "know": case "again": {
+      const c = st.deck[st.i]; const k = known();
+      if (c) { if (d.act === "know") k[c.id] = 1; else delete k[c.id]; store.set("known", k); }
+      if (d.act === "know" && st.filter === "review") st.deck.splice(st.i, 1); else st.i++;
+      if (st.i >= st.deck.length) st.i = Math.max(0, st.deck.length - (d.act === "again" ? 0 : 1));
+      if (d.act === "again" && st.i >= st.deck.length) { st.deck = shuffle(st.deck); st.i = 0; }
+      st.flipped = false; rerender(); break;
+    }
+    case "reset": { const k = known(); cardsIn(st.scope).forEach((c) => delete k[c.id]); store.set("known", k); buildDeck(); rerender(); break; }
+    case "next-q": st.quiz.i++; st.quiz.picked = null; rerender(); break;
+    case "new-quiz": newQuiz(st.quiz.scope); rerender(); break;
+  }
+});
+document.addEventListener("keydown", (e) => {
+  const inCards = st.view === "cards" || (st.view === "subject" && st.mode === "cards");
+  if (!inCards || e.metaKey || e.ctrlKey) return;
+  if (e.key === " ") { e.preventDefault(); $("#card")?.click(); }
+  else if (e.key === "ArrowRight") document.querySelector('[data-act="next"]')?.click();
+  else if (e.key === "ArrowLeft") document.querySelector('[data-act="prev"]')?.click();
+  else if (e.key === "1") document.querySelector('[data-act="again"]')?.click();
+  else if (e.key === "2") document.querySelector('[data-act="know"]')?.click();
+});
+// Swipe on a card: left = review again, right = I know this
+let sx = null;
+document.addEventListener("touchstart", (e) => { if (e.target.closest("#card")) sx = e.touches[0].clientX; }, { passive: true });
+document.addEventListener("touchend", (e) => {
+  if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; sx = null;
+  if (Math.abs(dx) > 70) document.querySelector(`[data-act="${dx > 0 ? "know" : "again"}"]`)?.click();
+}, { passive: true });
+window.addEventListener("hashchange", route);
+
+/* ---------- boot ---------- */
+async function load() {
+  try {
+    const r = await fetch("data.json", { cache: "no-cache" });
+    const fresh = await r.json();
+    if (DATA && fresh.generatedAt === DATA.generatedAt) return;
+    const first = !DATA; DATA = fresh;
+    if (!first) { rerender(); return; }
+  } catch (e) {
+    if (DATA) return;
+    $("#main").innerHTML = `<div class="page"><div class="empty"><h3>Can't load your study material</h3><p style="margin:0">Check your connection and open the app again.</p></div></div>`;
+    return;
+  }
+  route();
+}
+render();
+load();
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && DATA) load(); });
+</script>
+</body>
+</html>
