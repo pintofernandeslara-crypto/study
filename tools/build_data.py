@@ -1,16 +1,20 @@
 """Build data.json for the app from exported study-hub documents.
 
 Usage: python3 tools/build_data.py <docs_dir> [out_file]
-<docs_dir> holds files named subjects__<id>.json, decks__<id>.json,
-quizzes__<id>.json and meta__status.json (as exported from the study hub database).
+<docs_dir> holds the study hub database export: either files named subjects__<id>.json,
+decks__<id>.json, quizzes__<id>.json, meta__status.json, or the ArtifactData out_dir
+layout subjects/<id>.json, decks/<id>.json, quizzes/<id>.json, meta/status.json.
 """
 import json, os, sys
 
 IDS = ["financial-accounting", "organisational-behaviour", "critical-thinking", "math", "principles-of-management"]
 
 def load(d, name):
-    p = os.path.join(d, name)
-    return json.load(open(p)) if os.path.exists(p) else {}
+    # Accepts "<collection>__<id>.json" files or the ArtifactData out_dir layout "<collection>/<id>.json".
+    for p in (os.path.join(d, name), os.path.join(d, *name[:-5].split("__", 1)) + ".json"):
+        if os.path.exists(p):
+            return json.load(open(p))
+    return {}
 
 def main():
     d = sys.argv[1]
