@@ -117,6 +117,9 @@ h3 { font-size: 16px; font-weight: 600; }
 .starter { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: var(--warn-bg); color: var(--warn-ink); vertical-align: middle; }
 .empty { padding: 20px; border-radius: 14px; border: 1px dashed var(--line); color: var(--ink-2); display: grid; gap: 6px; }
 .empty h3 { color: var(--ink); }
+.sum-tools { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.img-chip { margin-left: auto; flex: none; display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: var(--accent); background: var(--panel-2); border-radius: 999px; padding: 3px 8px; font-variant-numeric: tabular-nums; }
+details.sec summary .img-chip + .chev { margin-left: 6px; }
 .fig { margin: 4px 0 0; display: grid; gap: 6px; }
 .fig-btn { border: 0; padding: 0; background: #fff; border-radius: 10px; overflow: hidden; cursor: zoom-in; display: block; max-width: 100%; justify-self: start; box-shadow: 0 0 0 1px var(--line); }
 .fig img { display: block; max-width: 100%; height: auto; max-height: 420px; object-fit: contain; }
@@ -213,6 +216,7 @@ const ICONS = {
   subjects: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h10.5a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10.5"/></svg>',
   cards: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="14" height="11" rx="2.5"/><path d="M7 8V6.5A2.5 2.5 0 0 1 9.5 4h9A2.5 2.5 0 0 1 21 6.5v7a2.5 2.5 0 0 1-2.5 2.5H17"/></svg>',
   quiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4M12 16.8v.2"/></svg>',
+  image: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg>',
   chev: '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>',
 };
 const VIEWS = [["today", "Today"], ["subjects", "Subjects"], ["cards", "Flashcards"], ["quiz", "Quiz"]];
@@ -340,10 +344,12 @@ function renderSubject() {
   if (st.mode === "cards") { if (st.deckScope !== s.id) { st.scope = s.id; buildDeck(); } return head + cardsBody(); }
   if (st.mode === "quiz") { if (!st.quiz || st.quiz.scope !== s.id) newQuiz(s.id); return head + quizBody(); }
   if (!d.summary.length) return head + `<div class="empty"><h3>No summary yet</h3><p style="margin:0">It appears after the next update reads this subject's files.</p></div>`;
+  const nImg = d.summary.reduce((a, x) => a + (x.images || []).length, 0);
   return head + `${d.overview ? `<p style="margin:0" class="muted">${esc(d.overview)}</p>` : ""}
+    <div class="sum-tools"><span class="muted">${d.summary.length} topics${nImg ? ` · ${nImg} images` : ""}</span><button class="btn" data-act="toggle-all" style="padding:7px 12px;font-size:14px">Expand all</button></div>
     <div class="summary">${d.summary.map((sec, i) => `
       <details class="sec" ${i === 0 ? "open" : ""}>
-        <summary><h3>${esc(sec.heading)} ${sec.starter ? '<span class="starter">Starter</span>' : ""}</h3>${ICONS.chev}</summary>
+        <summary><h3>${esc(sec.heading)} ${sec.starter ? '<span class="starter">Starter</span>' : ""}</h3>${(sec.images || []).length ? `<span class="img-chip">${ICONS.image}${sec.images.length}</span>` : ""}${ICONS.chev}</summary>
         ${sec.source ? `<span class="src">${esc(sec.source)}${sec.date ? " · " + esc(sec.date) : ""}</span>` : ""}
         ${(sec.points || []).length ? `<ul>${sec.points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}
         ${(sec.formulas || []).map((f) => `<div class="formula">${esc(f)}</div>`).join("")}
@@ -440,6 +446,12 @@ document.addEventListener("click", (e) => {
   switch (d.act) {
     case "review-all": st.scope = "all"; st.filter = "review"; store.set("scope", "all"); store.set("filter", "review"); go("cards"); break;
     case "quiz-all": st.scope = "all"; store.set("scope", "all"); newQuiz("all"); go("quiz"); break;
+    case "toggle-all": {
+      const all = [...document.querySelectorAll("details.sec")];
+      const open = !all.every((x) => x.open);
+      all.forEach((x) => { x.open = open; });
+      t.textContent = open ? "Collapse all" : "Expand all"; break;
+    }
     case "hide-install": store.set("hideInstall", true); rerender(); break;
     case "shuffle": buildDeck(); rerender(); break;
     case "prev": st.i = Math.max(0, st.i - 1); st.flipped = false; rerender(); break;
