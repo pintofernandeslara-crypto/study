@@ -30,6 +30,7 @@ def main():
             "summary": s.get("summary", []),
             "sources": s.get("sources", []),
             "updatedAt": s.get("updatedAt"),
+            "course": s.get("course"),
             "cards": load(d, f"decks__{sid}.json").get("cards", []),
             "questions": load(d, f"quizzes__{sid}.json").get("questions", []),
         }

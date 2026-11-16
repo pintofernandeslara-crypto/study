@@ -181,6 +181,19 @@ details.sec[open] summary .chev { transform: rotate(90deg); }
 .install { background: var(--panel); border-radius: 14px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; }
 .install img { width: 36px; height: 36px; border-radius: 8px; flex: none; }
 .install button { margin-left: auto; border: 0; background: none; color: var(--ink-2); font-size: 20px; line-height: 1; padding: 0 4px; }
+/* Course info card */
+.course { display: grid; gap: 12px; padding: 14px 16px; border-radius: 14px; background: color-mix(in srgb, var(--c) 8%, var(--panel)); border: 1px solid color-mix(in srgb, var(--c) 30%, var(--line)); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 18px; }
+.fact { display: grid; gap: 2px; min-width: 0; font-size: 14.5px; }
+.fact .label { font-size: 11px; }
+.fact.wide { grid-column: 1 / -1; }
+.badge { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 1px 8px; border-radius: 999px; margin-right: 6px; }
+.badge.yes { background: var(--good-bg); color: var(--good); }
+.badge.no { background: var(--panel-2); color: var(--ink-2); }
+.dates { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.dates li { display: grid; grid-template-columns: 86px 1fr; gap: 8px; }
+.dates time { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; padding-top: 1px; }
+.course ul.imp { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
 /* Chapters, highlights, examples, notes, edit, settings */
 .toc { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
 .toc::-webkit-scrollbar { display: none; }
@@ -400,6 +413,7 @@ function renderSubject() {
   const s = subj(st.subject); const d = sdata(s.id);
   const head = `<button class="back" data-go="subjects">‹ Subjects</button>
     <div class="page-head"><span class="label" style="display:flex;align-items:center;gap:8px"><span class="dot" style="--c:${col(s)}"></span>Updated ${fmtDate(d.updatedAt)}</span><h1>${esc(s.name)}</h1></div>
+    ${courseCard(d.course, s)}
     <div class="seg" role="group" aria-label="Study mode">${[["summary", "Summary"], ["notes", "Notes"], ["cards", "Cards"], ["quiz", "Quiz"]].map(([m, l]) => `<button data-mode="${m}" aria-pressed="${st.mode === m}">${l}</button>`).join("")}</div>`;
   if (st.mode === "cards") { if (st.deckScope !== s.id) { st.scope = s.id; buildDeck(); } return head + cardsBody(); }
   if (st.mode === "quiz") { if (!st.quiz || st.quiz.scope !== s.id) newQuiz(s.id); return head + quizBody(); }
@@ -432,6 +446,22 @@ function renderSubject() {
         </details>`; }).join("")}
       </section>`).join("")}</div>
     ${(d.sources || []).length ? `<p class="muted" style="font-size:13px;margin:0">Taken only from: ${d.sources.map((x) => esc(x.name || x)).join(" · ")}</p>` : ""}`;
+}
+
+function todayISO() { return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Zurich" }).format(new Date()); }
+const fmtDay = (iso) => { const x = new Date(iso + "T12:00:00"); return isNaN(x) ? iso : x.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }); };
+function courseCard(c, s) {
+  if (!c) return "";
+  const b = String(c.bonus || ""); const yes = /^yes\b/i.test(b), no = /^no[:.,]/i.test(b);
+  const upcoming = (c.dates || []).filter((x) => x.date >= todayISO()).slice(0, 4);
+  return `<section class="course" style="--c:${col(s)}" aria-label="Course information"><div class="facts">
+    <div class="fact"><span class="label">Lesson</span><span><b>${esc(c.day || "")}</b> ${esc(c.time || "")}</span>${c.place ? `<span class="muted">${esc(c.place)}</span>` : ""}</div>
+    <div class="fact"><span class="label">Teacher${(c.teachers || []).length > 1 ? "s" : ""}</span>${(c.teachers || []).map((t) => `<span>${esc(t)}</span>`).join("")}</div>
+    <div class="fact"><span class="label">Bonus exam / points</span><span><span class="badge ${yes ? "yes" : "no"}">${yes ? "Yes" : no ? "No" : "Not known"}</span>${esc(yes || no ? b.replace(/^(yes|no)[:,.]?\s*/i, "") : b)}</span></div>
+    <div class="fact wide"><span class="label">Final exam</span><span>${esc(c.finalExam || "")}</span>${c.aids ? `<span class="muted">Allowed: ${esc(c.aids)}</span>` : ""}${c.grading ? `<span class="muted">Grade: ${esc(c.grading)}</span>` : ""}</div>
+    ${upcoming.length ? `<div class="fact"><span class="label">Coming up</span><ul class="dates">${upcoming.map((x) => `<li><time>${fmtDay(x.date)}</time><span>${esc(x.what)}</span></li>`).join("")}</ul></div>` : ""}
+    ${(c.important || []).length ? `<div class="fact"><span class="label">Important</span><ul class="imp">${c.important.map((x) => `<li>${rich(x)}</li>`).join("")}</ul></div>` : ""}
+  </div>${c.source ? `<span class="muted" style="font-size:12px">Source: ${esc(c.source)}</span>` : ""}</section>`;
 }
 
 function notesBody(s) {
