@@ -2,8 +2,8 @@
 
 Usage: python3 tools/build_data.py <docs_dir> [out_file]
 <docs_dir> holds the study hub database export: either files named subjects__<id>.json,
-decks__<id>.json, quizzes__<id>.json, meta__status.json, or the ArtifactData out_dir
-layout subjects/<id>.json, decks/<id>.json, quizzes/<id>.json, meta/status.json.
+decks__<id>.json, quizzes__<id>.json, meta__status.json, settings__app.json, or the ArtifactData out_dir
+layout subjects/<id>.json, decks/<id>.json, quizzes/<id>.json, meta/status.json, settings/app.json.
 """
 import json, os, sys
 
@@ -20,7 +20,9 @@ def main():
     d = sys.argv[1]
     out = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.dirname(__file__), "..", "data.json")
     meta = load(d, "meta__status.json")
-    data = {"generatedAt": meta.get("lastRun"), "subjects": {}}
+    settings = load(d, "settings__app.json")
+    data = {"generatedAt": meta.get("lastRun"), "subjects": {},
+            "settings": {k: settings[k] for k in ("rules", "colors", "sources") if k in settings}}
     for sid in IDS:
         s = load(d, f"subjects__{sid}.json")
         data["subjects"][sid] = {

@@ -44,7 +44,7 @@
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; height: 100%; }
-body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: var(--fs, 16px); line-height: 1.5; -webkit-font-smoothing: antialiased; }
 button { font: inherit; color: inherit; cursor: pointer; }
 button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 [hidden] { display: none !important; }
@@ -64,7 +64,7 @@ h3 { font-size: 16px; font-weight: 600; }
 .page-head { display: grid; gap: 4px; }
 .back { display: inline-flex; align-items: center; gap: 4px; border: 0; background: none; color: var(--accent); padding: 0; font-weight: 500; justify-self: start; }
 
-.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: grid; grid-template-columns: repeat(4, 1fr); background: color-mix(in srgb, var(--panel) 88%, transparent); backdrop-filter: saturate(1.6) blur(18px); -webkit-backdrop-filter: saturate(1.6) blur(18px); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: grid; grid-template-columns: repeat(5, 1fr); background: color-mix(in srgb, var(--panel) 88%, transparent); backdrop-filter: saturate(1.6) blur(18px); -webkit-backdrop-filter: saturate(1.6) blur(18px); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
 .tab { height: var(--tabbar-h); border: 0; background: none; display: grid; justify-items: center; align-content: center; gap: 2px; font-size: 11px; font-weight: 500; color: var(--ink-2); }
 .tab svg { width: 24px; height: 24px; }
 .tab[aria-current="page"] { color: var(--accent); }
@@ -181,6 +181,41 @@ details.sec[open] summary .chev { transform: rotate(90deg); }
 .install { background: var(--panel); border-radius: 14px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; font-size: 14px; }
 .install img { width: 36px; height: 36px; border-radius: 8px; flex: none; }
 .install button { margin-left: auto; border: 0; background: none; color: var(--ink-2); font-size: 20px; line-height: 1; padding: 0 4px; }
+/* Chapters, highlights, examples, notes, edit, settings */
+.toc { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.toc::-webkit-scrollbar { display: none; }
+.toc button { flex: none; border: 1px solid color-mix(in srgb, var(--c) 40%, var(--line)); background: color-mix(in srgb, var(--c) 9%, var(--panel)); border-radius: 999px; padding: 5px 11px; font-size: 13px; font-weight: 500; }
+.chapter { display: grid; gap: 10px; scroll-margin-top: 16px; }
+.ch-title { display: flex; gap: 10px; align-items: baseline; padding: 10px 14px; border-radius: 12px; border-left: 6px solid var(--c); background: color-mix(in srgb, var(--c) 17%, var(--panel)); color: color-mix(in srgb, var(--c) 70%, var(--ink)); font-size: 1.15em; }
+.ch-title .n { font-family: var(--mono); font-size: 12px; opacity: .8; }
+.hl { padding: 1px 6px; border-radius: 5px; background: color-mix(in srgb, var(--c) 22%, transparent); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+mark { background: color-mix(in srgb, var(--c) 28%, transparent); color: inherit; padding: 0 3px; border-radius: 3px; font-weight: 600; }
+.ex { background: color-mix(in srgb, var(--c) 7%, var(--panel)); border: 1px solid color-mix(in srgb, var(--c) 30%, var(--line)); }
+.ex .label { color: color-mix(in srgb, var(--c) 75%, var(--ink)); }
+.ex .q { font-weight: 600; margin-top: 2px; }
+.ex p { margin: 6px 0 0; font-family: var(--mono); font-size: 13.5px; line-height: 1.5; }
+.tag-ed { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: var(--panel-2); color: var(--ink-2); vertical-align: middle; }
+.note { background: #fff8d6; border: 1px solid #e9d27a; border-radius: 10px; padding: 10px 12px; display: grid; gap: 6px; }
+@media (prefers-color-scheme: dark) { .note { background: #2e2a17; border-color: #6b5d24; } }
+.note textarea, .field textarea, .field input { font: inherit; color: var(--ink); width: 100%; border-radius: 8px; }
+.note textarea { background: transparent; border: 0; padding: 0; min-height: 52px; resize: vertical; }
+.note .top { display: flex; justify-content: space-between; gap: 8px; }
+.saved { font-size: 12px; color: var(--ink-2); }
+.linkbtn { border: 0; background: none; padding: 0; color: var(--accent); font-weight: 500; font-size: 14px; justify-self: start; }
+.edit-card { background: var(--panel); border-radius: 14px; padding: 14px 16px; display: grid; gap: 10px; }
+.field { display: grid; gap: 4px; }
+.field > span { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.field textarea, .field input { background: var(--bg); border: 1px solid var(--line); padding: 8px 10px; }
+.field textarea { min-height: 70px; resize: vertical; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+.btn.small { padding: 7px 12px; font-size: 14px; }
+.info { background: var(--panel); border-radius: 14px; padding: 12px 16px; font-size: 14px; color: var(--ink-2); }
+.rules { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+.color-row { display: flex; align-items: center; gap: 12px; padding: 10px 16px; }
+.color-row + .color-row { border-top: 1px solid var(--line); }
+.color-row input { width: 44px; height: 32px; border: 0; padding: 0; background: none; }
+.color-row .grow { flex: 1; min-width: 0; }
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } details.sec summary .chev { transition: none; } }
 </style>
 </head>
@@ -217,9 +252,10 @@ const ICONS = {
   cards: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="14" height="11" rx="2.5"/><path d="M7 8V6.5A2.5 2.5 0 0 1 9.5 4h9A2.5 2.5 0 0 1 21 6.5v7a2.5 2.5 0 0 1-2.5 2.5H17"/></svg>',
   quiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4M12 16.8v.2"/></svg>',
   image: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg>',
+  settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M2.5 12h3M18.5 12h3M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>',
   chev: '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>',
 };
-const VIEWS = [["today", "Today"], ["subjects", "Subjects"], ["cards", "Flashcards"], ["quiz", "Quiz"]];
+const VIEWS = [["today", "Today"], ["subjects", "Subjects"], ["cards", "Flashcards"], ["quiz", "Quiz"], ["settings", "Settings"]];
 
 /* ---------- storage ---------- */
 const store = (() => {
@@ -244,6 +280,30 @@ const subj = (id) => SUBJECTS.find((s) => s.id === id);
 const sdata = (id) => (DATA && DATA.subjects[id]) || { summary: [], cards: [], questions: [] };
 const fmtDate = (iso) => { if (!iso) return "—"; const d = new Date(iso); return isNaN(d) ? "—" : d.toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" }); };
 const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const DEFAULT_RULES = [
+  "Use only the sources given for each subject. Never add outside knowledge, websites or invented facts.",
+  "Divide each subject's summary by chapter, in lecture or textbook order.",
+  "Titles are highlighted in the subject's colour; key terms are highlighted inside the text.",
+  "Include examples whenever the source has them. Never invent an example.",
+  "Every section names the file it comes from.",
+];
+const local = () => store.get("look", {});
+const col = (s) => (local().colors || {})[s.id] || ((DATA && DATA.settings && DATA.settings.colors) || {})[s.id] || `var(${s.color})`;
+const rich = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, "<mark>$1</mark>");
+const slug = (t) => String(t || "").toLowerCase().normalize("NFKD").replace(/[^\w]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "x";
+function applyLook() { document.documentElement.style.setProperty("--fs", { s: "14px", m: "16px", l: "18px", xl: "20px" }[local().fontSize || "m"]); }
+function chapterOf(sec) {
+  if (sec.chapter) return sec.chapter;
+  const h = sec.heading || ""; const i = h.indexOf(" · ");
+  if (i > 0 && /^(ch|chapter|unit|part|session|week|lecture)\b/i.test(h)) return h.slice(0, i);
+  return h || "Other";
+}
+function sectionTitle(sec) { const h = sec.heading || "", ch = chapterOf(sec); return !sec.chapter && h.startsWith(ch + " · ") ? h.slice(ch.length + 3) : h; }
+// Notes and edits live on this device only (the installable app has no shared database).
+const notesOf = (id) => store.get("notes", {})[id] || { general: "", sections: {} };
+function setNote(id, key, val) { const all = store.get("notes", {}); const n = all[id] || { general: "", sections: {} }; if (key === "__general") n.general = val; else n.sections[key] = val; all[id] = n; store.set("notes", all); }
+const editsOf = (id) => store.get("edits", {})[id] || null;
+function summaryOf(id) { const e = editsOf(id); return e ? e.summary : sdata(id).summary; }
 function zurichNow() {
   const p = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Zurich", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date());
   const g = (t) => p.find((x) => x.type === t)?.value;
@@ -257,7 +317,7 @@ function go(hash) { if (location.hash !== "#" + hash) location.hash = hash; else
 function route() {
   const h = location.hash.slice(1) || "today";
   if (h.startsWith("s-") && subj(h.slice(2))) { st.view = "subject"; st.subject = h.slice(2); }
-  else if (["today", "subjects", "cards", "quiz"].includes(h)) { st.view = h; }
+  else if (["today", "subjects", "cards", "quiz", "settings"].includes(h)) { st.view = h; }
   else st.view = "today";
   if (st.view === "cards") buildDeck();
   if (st.view === "quiz" && (!st.quiz || st.quiz.scope !== st.scope)) newQuiz(st.scope);
@@ -270,7 +330,7 @@ function renderChrome() {
   const active = st.view === "subject" ? "subjects" : st.view;
   $("#tabbar").innerHTML = VIEWS.map(([v, l]) => `<button class="tab" data-go="${v}" ${active === v ? 'aria-current="page"' : ""}>${ICONS[v]}<span>${l}</span></button>`).join("");
   $("#side-views").innerHTML = VIEWS.filter(([v]) => v !== "subjects").map(([v, l]) => `<button class="nav-item" data-go="${v}" ${st.view === v ? 'aria-current="page"' : ""}>${ICONS[v]}${l}</button>`).join("");
-  $("#side-subjects").innerHTML = `<span class="label">Subjects</span>` + SUBJECTS.map((s) => `<button class="nav-item" data-go="s-${s.id}" ${st.view === "subject" && st.subject === s.id ? 'aria-current="page"' : ""}><span class="dot" style="--c:var(${s.color})"></span>${esc(s.name)}<span class="n">${sdata(s.id).cards.length}</span></button>`).join("");
+  $("#side-subjects").innerHTML = `<span class="label">Subjects</span>` + SUBJECTS.map((s) => `<button class="nav-item" data-go="s-${s.id}" ${st.view === "subject" && st.subject === s.id ? 'aria-current="page"' : ""}><span class="dot" style="--c:${col(s)}"></span>${esc(s.name)}<span class="n">${sdata(s.id).cards.length}</span></button>`).join("");
   $("#side-foot").textContent = DATA ? `Updated ${fmtDate(DATA.generatedAt)}` : "";
 }
 
@@ -310,14 +370,14 @@ function renderToday() {
 }
 function classTile(a, z, id, day) {
   const s = subj(id);
-  return `<button class="class" data-go="s-${id}" style="--c:var(${s.color});border-top:0;border-right:0;border-bottom:0;text-align:left">
+  return `<button class="class" data-go="s-${id}" style="--c:${col(s)};border-top:0;border-right:0;border-bottom:0;text-align:left">
     <time>${day ? day + " · " : ""}${a}–${z}</time><h3>${esc(s.name)}</h3></button>`;
 }
 function progressRow(s) {
   const cs = sdata(s.id).cards; const k = known();
   const n = cs.filter((c) => k[c.id]).length; const pct = cs.length ? Math.round((n / cs.length) * 100) : 0;
   const bq = best()[s.id];
-  return `<button class="row" data-go="s-${s.id}" style="--c:var(${s.color})">
+  return `<button class="row" data-go="s-${s.id}" style="--c:${col(s)}">
     <span class="dot"></span>
     <span class="grow"><span style="display:flex;justify-content:space-between;gap:8px"><b style="font-weight:600">${esc(s.name)}</b><span class="sub">${n}/${cs.length}${bq !== undefined ? " · quiz " + bq + "%" : ""}</span></span>
     <span class="bar" style="display:block;margin-top:6px"><i style="width:${pct}%"></i></span></span>${ICONS.chev}</button>`;
@@ -333,35 +393,110 @@ function installHint() {
 
 function renderSubjects() {
   return `<div class="page-head"><span class="label">Semester 1</span><h1>Subjects</h1></div>
-    <div class="group">${SUBJECTS.map((s) => { const d = sdata(s.id); return `<button class="row" data-go="s-${s.id}" style="--c:var(${s.color})"><span class="dot"></span><span class="grow"><b style="font-weight:600">${esc(s.name)}</b><br><span class="sub">${d.summary.length} topics · ${d.cards.length} cards · ${d.questions.length} questions</span></span>${ICONS.chev}</button>`; }).join("")}</div>`;
+    <div class="group">${SUBJECTS.map((s) => { const d = sdata(s.id); return `<button class="row" data-go="s-${s.id}" style="--c:${col(s)}"><span class="dot"></span><span class="grow"><b style="font-weight:600">${esc(s.name)}</b><br><span class="sub">${new Set(summaryOf(s.id).map(chapterOf)).size} chapters · ${d.cards.length} cards · ${d.questions.length} questions</span></span>${ICONS.chev}</button>`; }).join("")}</div>`;
 }
 
 function renderSubject() {
   const s = subj(st.subject); const d = sdata(s.id);
   const head = `<button class="back" data-go="subjects">‹ Subjects</button>
-    <div class="page-head"><span class="label" style="display:flex;align-items:center;gap:8px"><span class="dot" style="--c:var(${s.color})"></span>Updated ${fmtDate(d.updatedAt)}</span><h1>${esc(s.name)}</h1></div>
-    <div class="seg" role="group" aria-label="Study mode">${[["summary", "Summary"], ["cards", "Cards"], ["quiz", "Quiz"]].map(([m, l]) => `<button data-mode="${m}" aria-pressed="${st.mode === m}">${l}</button>`).join("")}</div>`;
+    <div class="page-head"><span class="label" style="display:flex;align-items:center;gap:8px"><span class="dot" style="--c:${col(s)}"></span>Updated ${fmtDate(d.updatedAt)}</span><h1>${esc(s.name)}</h1></div>
+    <div class="seg" role="group" aria-label="Study mode">${[["summary", "Summary"], ["notes", "Notes"], ["cards", "Cards"], ["quiz", "Quiz"]].map(([m, l]) => `<button data-mode="${m}" aria-pressed="${st.mode === m}">${l}</button>`).join("")}</div>`;
   if (st.mode === "cards") { if (st.deckScope !== s.id) { st.scope = s.id; buildDeck(); } return head + cardsBody(); }
   if (st.mode === "quiz") { if (!st.quiz || st.quiz.scope !== s.id) newQuiz(s.id); return head + quizBody(); }
-  if (!d.summary.length) return head + `<div class="empty"><h3>No summary yet</h3><p style="margin:0">It appears after the next update reads this subject's files.</p></div>`;
-  const nImg = d.summary.reduce((a, x) => a + (x.images || []).length, 0);
-  return head + `${d.overview ? `<p style="margin:0" class="muted">${esc(d.overview)}</p>` : ""}
-    <div class="sum-tools"><span class="muted">${d.summary.length} topics${nImg ? ` · ${nImg} images` : ""}</span><button class="btn" data-act="toggle-all" style="padding:7px 12px;font-size:14px">Expand all</button></div>
-    <div class="summary">${d.summary.map((sec, i) => `
-      <details class="sec" ${i === 0 ? "open" : ""}>
-        <summary><h3>${esc(sec.heading)} ${sec.starter ? '<span class="starter">Starter</span>' : ""}</h3>${(sec.images || []).length ? `<span class="img-chip">${ICONS.image}${sec.images.length}</span>` : ""}${ICONS.chev}</summary>
-        ${sec.source ? `<span class="src">${esc(sec.source)}${sec.date ? " · " + esc(sec.date) : ""}</span>` : ""}
-        ${(sec.points || []).length ? `<ul>${sec.points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}
-        ${(sec.formulas || []).map((f) => `<div class="formula">${esc(f)}</div>`).join("")}
-        ${(sec.terms || []).length ? `<div class="terms">${sec.terms.map((t) => `<div><b>${esc(t.term)}:</b> ${esc(t.def || "")}</div>`).join("")}</div>` : ""}
-        ${(sec.images || []).map((im) => `<figure class="fig"><button class="fig-btn" data-zoom="${esc(im.src)}" data-cap="${esc(im.caption || "")}" aria-label="Enlarge image"><img src="${esc(im.src)}" alt="${esc(im.caption || "")}" loading="lazy"></button>${im.caption ? `<figcaption>${esc(im.caption)}</figcaption>` : ""}</figure>`).join("")}
-        ${(sec.examples || []).length ? `<div class="examples"><span class="label">Worked examples</span>${sec.examples.map((x) => `<details class="ex"><summary>${esc(x.q)}</summary><p>${esc(x.a)}</p></details>`).join("")}</div>` : ""}
-      </details>`).join("")}</div>
-    ${(d.sources || []).length ? `<p class="muted" style="font-size:13px;margin:0">Sources: ${d.sources.map((x) => esc(x.name || x)).join(" · ")}</p>` : ""}`;
+  if (st.mode === "notes") return head + notesBody(s);
+  if (st.editing) return head + editBody(s);
+  const secs = summaryOf(s.id);
+  if (!secs.length) return head + `<div class="empty"><h3>No summary yet</h3><p style="margin:0">It appears after the next update reads this subject's files.</p></div>`;
+  const groups = []; const map = {};
+  secs.forEach((sec) => { const c = chapterOf(sec); if (!map[c]) { map[c] = []; groups.push([c, map[c]]); } map[c].push(sec); });
+  const notes = notesOf(s.id).sections || {};
+  const edited = !!editsOf(s.id);
+  return head + `${d.overview ? `<p style="margin:0" class="muted">${rich(d.overview)}</p>` : ""}
+    ${edited ? `<div class="info">You edited this summary on this device, so new automatic updates for this subject are hidden here. <button class="linkbtn" data-act="drop-edits">Show the latest version instead</button></div>` : ""}
+    <div class="toc" style="--c:${col(s)}">${groups.map(([g], i) => `<button data-jump="ch-${i}">${esc(g)}</button>`).join("")}</div>
+    <div class="sum-tools"><span class="muted">${groups.length} chapters · ${secs.length} topics</span>
+      <div class="actions"><button class="btn small" data-act="toggle-all">Expand all</button><button class="btn small" data-act="edit">Edit</button></div></div>
+    <div class="summary" style="--c:${col(s)}">${groups.map(([g, list], gi) => `
+      <section class="chapter" id="ch-${gi}">
+        <h2 class="ch-title"><span class="n">${String(gi + 1).padStart(2, "0")}</span><span>${esc(g)}</span></h2>
+        ${list.map((sec, i) => { const t = sectionTitle(sec); const key = slug(sec.heading); const nt = notes[key] || "";
+          return `<details class="sec" ${gi === 0 && i === 0 ? "open" : ""}>
+          <summary><h3><span class="hl">${esc(t && t !== g ? t : g)}</span> ${sec.starter ? '<span class="starter">Starter</span>' : ""} ${sec.edited ? '<span class="tag-ed">Edited</span>' : ""}</h3>${(sec.images || []).length ? `<span class="img-chip">${ICONS.image}${sec.images.length}</span>` : ""}${ICONS.chev}</summary>
+          <span class="src">Source: ${sec.source ? esc(sec.source) : "not given"}${sec.date ? " · " + esc(sec.date) : ""}</span>
+          ${(sec.points || []).length ? `<ul>${sec.points.map((p) => `<li>${rich(p)}</li>`).join("")}</ul>` : ""}
+          ${(sec.formulas || []).map((f) => `<div class="formula">${esc(f)}</div>`).join("")}
+          ${(sec.terms || []).length ? `<div class="terms">${sec.terms.map((t) => `<div><b>${esc(t.term)}:</b> ${esc(t.def || "")}</div>`).join("")}</div>` : ""}
+          ${(sec.images || []).map((im) => `<figure class="fig"><button class="fig-btn" data-zoom="${esc(im.src)}" data-cap="${esc(im.caption || "")}" aria-label="Enlarge image"><img src="${esc(im.src)}" alt="${esc(im.caption || "")}" loading="lazy"></button>${im.caption ? `<figcaption>${esc(im.caption)}</figcaption>` : ""}</figure>`).join("")}
+          ${(sec.examples || []).length ? `<div class="examples">${sec.examples.map((x) => typeof x === "string" ? `<div class="ex"><span class="label">Example</span><p>${rich(x)}</p></div>` : `<div class="ex"><span class="label">Example</span><div class="q">${rich(x.q || "")}</div>${x.a ? `<p>${rich(x.a)}</p>` : ""}</div>`).join("")}</div>` : ""}
+          ${nt || st.openNote === s.id + key ? `<div class="note"><div class="top"><span class="label">My note</span><span class="saved" id="saved-${esc(key)}"></span></div><textarea data-note="${esc(key)}" aria-label="My note" placeholder="Write your own note…">${esc(nt)}</textarea></div>` : `<button class="linkbtn" data-addnote="${esc(key)}">+ Add a note</button>`}
+        </details>`; }).join("")}
+      </section>`).join("")}</div>
+    ${(d.sources || []).length ? `<p class="muted" style="font-size:13px;margin:0">Taken only from: ${d.sources.map((x) => esc(x.name || x)).join(" · ")}</p>` : ""}`;
+}
+
+function notesBody(s) {
+  const n = notesOf(s.id); const secs = summaryOf(s.id); const by = {}; secs.forEach((x) => { by[slug(x.heading)] = x; });
+  const list = Object.entries(n.sections || {}).filter(([, v]) => v && v.trim());
+  return `<div class="info">Notes are saved on this device. Notes written in the Claude version stay there.</div>
+    <div class="note"><div class="top"><span class="label">General notes</span><span class="saved" id="saved-__general"></span></div>
+      <textarea data-note="__general" style="min-height:140px" aria-label="General notes" placeholder="Questions for class, exam tips, reminders…">${esc(n.general || "")}</textarea></div>
+    <h2>Notes on sections</h2>
+    ${list.length ? list.map(([k, v]) => `<div style="display:grid;gap:6px"><b>${esc(by[k] ? sectionTitle(by[k]) : k)}</b><span class="muted" style="font-size:13px">${esc(by[k] ? chapterOf(by[k]) : "Section no longer in summary")}</span>
+      <div class="note"><div class="top"><span class="label">My note</span><span class="saved" id="saved-${esc(k)}"></span></div><textarea data-note="${esc(k)}" aria-label="My note">${esc(v)}</textarea></div></div>`).join("")
+      : `<p class="muted" style="margin:0">No section notes yet. In the Summary, open a topic and tap “+ Add a note”.</p>`}`;
+}
+
+const lines = (t) => String(t || "").split("\n").map((x) => x.trim()).filter(Boolean);
+function editBody(s) {
+  const dr = st.draft;
+  return `<div class="info">Changes are saved on this device. To change the summary on every device and keep it in future updates, edit it in the Claude version of the Study Hub.</div>
+    ${dr.map((sec, i) => `<div class="edit-card" data-idx="${i}">
+      <div class="grid2"><label class="field"><span>Chapter</span><input data-f="chapter" value="${esc(chapterOf(sec))}"></label>
+        <label class="field"><span>Title</span><input data-f="heading" value="${esc(sec.heading || "")}"></label></div>
+      <label class="field"><span>Key points (one per line, **word** = highlight)</span><textarea data-f="points" rows="6">${esc((sec.points || []).join("\n"))}</textarea></label>
+      <div class="grid2"><label class="field"><span>Examples (one per line: question || answer)</span><textarea data-f="examples">${esc((sec.examples || []).map((e) => typeof e === "string" ? e : (e.q || "") + (e.a ? " || " + e.a : "")).join("\n"))}</textarea></label>
+        <label class="field"><span>Formulas (one per line)</span><textarea data-f="formulas">${esc((sec.formulas || []).join("\n"))}</textarea></label></div>
+      <label class="field"><span>Source file</span><input data-f="source" value="${esc(sec.source || "")}"></label>
+      <div class="actions"><button class="btn small" data-move="${i}:-1" ${i === 0 ? "disabled" : ""}>Move up</button><button class="btn small" data-move="${i}:1" ${i === dr.length - 1 ? "disabled" : ""}>Move down</button><button class="btn small bad" data-del="${i}">Delete</button></div>
+    </div>`).join("")}
+    <div class="actions"><button class="btn" data-act="edit-add">+ Add section</button></div>
+    <div class="actions"><button class="btn" data-act="edit-cancel">Cancel</button><button class="btn primary" data-act="edit-save">Save changes</button></div>`;
+}
+function readDraft() {
+  document.querySelectorAll(".edit-card").forEach((card) => {
+    const sec = st.draft[+card.dataset.idx]; if (!sec) return;
+    const v = (f) => card.querySelector(`[data-f="${f}"]`).value;
+    const next = { chapter: v("chapter").trim(), heading: v("heading").trim(), points: lines(v("points")), formulas: lines(v("formulas")), source: v("source").trim(),
+      examples: lines(v("examples")).map((l) => { const [q, ...a] = l.split("||"); return a.length ? { q: q.trim(), a: a.join("||").trim() } : { q: q.trim() }; }) };
+    const was = JSON.stringify([chapterOf(sec), sec.heading || "", sec.points || [], sec.formulas || [], sec.source || "", (sec.examples || []).map((e) => typeof e === "string" ? { q: e } : e)]);
+    if (was !== JSON.stringify([next.chapter, next.heading, next.points, next.formulas, next.source, next.examples])) { Object.assign(sec, next); sec.edited = true; delete sec.starter; }
+  });
+}
+
+function renderSettings() {
+  const lk = local(); const rules = (DATA && DATA.settings && DATA.settings.rules && DATA.settings.rules.length) ? DATA.settings.rules : DEFAULT_RULES;
+  const srcs = (DATA && DATA.settings && DATA.settings.sources) || {};
+  return `<div class="page-head"><span class="label">Your app</span><h1>Settings</h1></div>
+    <section style="display:grid;gap:10px"><h2>Text size</h2>
+      <div class="seg" role="group" aria-label="Text size">${[["s", "Small"], ["m", "Normal"], ["l", "Large"], ["xl", "Extra large"]].map(([k, l]) => `<button data-fs="${k}" aria-pressed="${(lk.fontSize || "m") === k}">${l}</button>`).join("")}</div></section>
+    <section style="display:grid;gap:10px"><h2>Subject colours</h2>
+      <div class="group">${SUBJECTS.map((s) => `<label class="color-row"><span class="dot" style="--c:${col(s)}"></span><span class="grow"><b style="font-weight:600">${esc(s.name)}</b>${srcs[s.id] ? `<br><span class="muted" style="font-size:13px">Taken from: ${esc(srcs[s.id])}</span>` : ""}</span><input type="color" data-color="${s.id}" value="${hex(col(s))}" aria-label="${esc(s.name)} colour"></label>`).join("")}</div>
+      <div><button class="btn small" data-act="reset-colors">Use the colours from the Claude version</button></div></section>
+    <section style="display:grid;gap:10px"><h2>Summary rules</h2>
+      <p class="muted" style="margin:0">The automatic updates follow these rules. Change them in the Claude version under “App settings &amp; rules”; this app shows them after the next update.</p>
+      <div class="info" style="color:var(--ink)"><ol class="rules">${rules.map((r) => `<li>${rich(r)}</li>`).join("")}</ol></div>
+      <a class="btn" style="justify-self:start;text-decoration:none;color:inherit" href="https://claude.ai/artifact/YGMdQ7bj6FeHc77rbKN6HF">Open the Claude version</a></section>
+    <section style="display:grid;gap:10px"><h2>Saved on this device</h2>
+      <div class="actions"><button class="btn small" data-act="copy-notes">Copy all my notes</button><span class="saved" id="copy-msg"></span></div></section>`;
+}
+function hex(c) {
+  if (/^#[0-9a-f]{6}$/i.test(c)) return c;
+  const m = c.match(/var\((--[\w-]+)\)/); const v = m ? getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim() : "";
+  return /^#[0-9a-f]{6}$/i.test(v) ? v : "#2c6ea3";
 }
 
 function scopeChips() {
-  return `<div class="chips">${[["all", "All subjects"]].concat(SUBJECTS.map((s) => [s.id, s.short])).map(([id, l]) => `<button class="chip" data-scope="${id}" aria-pressed="${st.scope === id}">${id !== "all" ? `<span class="dot" style="--c:var(${subj(id).color})"></span>` : ""}${esc(l)}</button>`).join("")}</div>`;
+  return `<div class="chips">${[["all", "All subjects"]].concat(SUBJECTS.map((s) => [s.id, s.short])).map(([id, l]) => `<button class="chip" data-scope="${id}" aria-pressed="${st.scope === id}">${id !== "all" ? `<span class="dot" style="--c:${col(subj(id))}"></span>` : ""}${esc(l)}</button>`).join("")}</div>`;
 }
 
 function buildDeck() {
@@ -385,7 +520,7 @@ function cardsBody() {
   const s = subj(c.sid);
   return filterSeg + `
     <div class="stage">
-      <button class="card${st.flipped ? " flipped" : ""}" id="card" aria-label="Flip card" style="--c:var(${s.color})">
+      <button class="card${st.flipped ? " flipped" : ""}" id="card" aria-label="Flip card" style="--c:${col(s)}">
         <div class="face"><span class="label">${esc(s.short)} · ${esc(c.topic || "")} ${c.starter ? '<span class="starter">Starter</span>' : ""}</span><div class="q">${esc(c.q)}</div><span class="hint">Tap to flip</span></div>
         <div class="face back"><span class="label">Answer</span><div class="a">${esc(c.a)}</div></div>
       </button>
@@ -413,7 +548,7 @@ function quizBody() {
       <button class="btn primary" data-act="new-quiz">New round</button></div>`;
   }
   const q = z.qs[z.i]; const s = subj(q.sid); const answered = z.picked !== null;
-  return `<div class="bar" style="--c:var(${s.color})"><i style="width:${(z.i / z.qs.length) * 100}%"></i></div>
+  return `<div class="bar" style="--c:${col(s)}"><i style="width:${(z.i / z.qs.length) * 100}%"></i></div>
     <div style="display:grid;gap:6px"><span class="label">${esc(s.short)} · Question ${z.i + 1} of ${z.qs.length} · Score ${z.score} ${q.starter ? '<span class="starter">Starter</span>' : ""}</span><h2 style="font-weight:600">${esc(q.q)}</h2></div>
     <div class="opts">${q.options.map((o, i) => { let c = "opt"; if (answered && i === q.answer) c += " right"; else if (answered && i === z.picked) c += " wrong"; return `<button class="${c}" data-opt="${i}" ${answered ? "disabled" : ""}><span class="k">${"ABCDEF"[i]}</span><span>${esc(o)}</span></button>`; }).join("")}</div>
     ${answered ? `<div class="explain"><b>${z.picked === q.answer ? "Correct." : "Not quite."}</b> ${esc(q.explain || "")}</div><div><button class="btn primary" data-act="next-q">${z.i === z.qs.length - 1 ? "See result" : "Next question"}</button></div>` : ""}`;
@@ -422,7 +557,8 @@ function quizBody() {
 function render() {
   renderChrome();
   if (!DATA) { $("#main").innerHTML = `<div class="page"><div class="empty"><h3>Loading your study material…</h3></div></div>`; return; }
-  const body = { today: renderToday, subjects: renderSubjects, subject: renderSubject, cards: renderCards, quiz: renderQuiz }[st.view]();
+  applyLook();
+  const body = { today: renderToday, subjects: renderSubjects, subject: renderSubject, cards: renderCards, quiz: renderQuiz, settings: renderSettings }[st.view]();
   $("#main").innerHTML = `<div class="page">${body}</div>`;
 }
 const rerender = () => { const y = $("#main").scrollTop, wy = window.scrollY; render(); $("#main").scrollTop = y; window.scrollTo(0, wy); };
@@ -437,8 +573,13 @@ document.addEventListener("click", (e) => {
     lb.addEventListener("click", (ev) => { if (ev.target === lb || ev.target.closest("button")) lb.remove(); });
     document.body.appendChild(lb); return;
   }
-  if (d.go) { if (d.go.startsWith("s-")) st.mode = "summary"; go(d.go); return; }
-  if (d.mode) { st.mode = d.mode; rerender(); return; }
+  if (d.go) { st.editing = false; if (d.go.startsWith("s-")) st.mode = "summary"; go(d.go); return; }
+  if (d.mode) { st.editing = false; st.mode = d.mode; rerender(); return; }
+  if (d.jump) { const el = document.getElementById(d.jump); if (el) { el.querySelectorAll("details.sec").forEach((x, i) => { if (i === 0) x.open = true; }); el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); } return; }
+  if (d.addnote) { st.openNote = st.subject + d.addnote; rerender(); const ta = document.querySelector(`textarea[data-note="${CSS.escape(d.addnote)}"]`); if (ta) { ta.closest("details").open = true; ta.focus(); } return; }
+  if (d.fs) { const lk = local(); lk.fontSize = d.fs; store.set("look", lk); rerender(); return; }
+  if (d.move) { readDraft(); const [i, k] = d.move.split(":").map(Number); [st.draft[i], st.draft[i + k]] = [st.draft[i + k], st.draft[i]]; rerender(); return; }
+  if (d.del !== undefined) { readDraft(); st.draft.splice(+d.del, 1); rerender(); return; }
   if (d.scope) { st.scope = d.scope; store.set("scope", st.scope); if (st.view === "cards") buildDeck(); else newQuiz(st.scope); rerender(); return; }
   if (d.filter) { st.filter = d.filter; store.set("filter", st.filter); buildDeck(); rerender(); return; }
   if (d.opt !== undefined) { const z = st.quiz; z.picked = +d.opt; if (z.picked === z.qs[z.i].answer) z.score++; rerender(); return; }
@@ -451,6 +592,25 @@ document.addEventListener("click", (e) => {
       const open = !all.every((x) => x.open);
       all.forEach((x) => { x.open = open; });
       t.textContent = open ? "Collapse all" : "Expand all"; break;
+    }
+    case "edit": st.draft = JSON.parse(JSON.stringify(summaryOf(st.subject))); st.editing = true; rerender(); break;
+    case "edit-cancel": st.editing = false; st.draft = null; rerender(); break;
+    case "edit-add": { readDraft(); const last = st.draft[st.draft.length - 1]; st.draft.push({ chapter: last ? chapterOf(last) : "", heading: "", points: [], source: "", edited: true }); rerender(); break; }
+    case "edit-save": {
+      readDraft();
+      const clean = st.draft.filter((x) => (x.heading || "").trim() || (x.points || []).length);
+      const all = store.get("edits", {}); all[st.subject] = { summary: clean, base: sdata(st.subject).updatedAt, at: new Date().toISOString() }; store.set("edits", all);
+      st.editing = false; st.draft = null; rerender(); break;
+    }
+    case "drop-edits": { const all = store.get("edits", {}); delete all[st.subject]; store.set("edits", all); rerender(); break; }
+    case "reset-colors": { const lk = local(); delete lk.colors; store.set("look", lk); rerender(); break; }
+    case "copy-notes": {
+      const all = store.get("notes", {});
+      const txt = SUBJECTS.map((s) => { const n = all[s.id]; if (!n) return ""; const parts = [n.general ? n.general : "", ...Object.entries(n.sections || {}).filter(([, v]) => v && v.trim()).map(([k, v]) => `- ${k}: ${v}`)].filter(Boolean); return parts.length ? `${s.name}\n${parts.join("\n")}` : ""; }).filter(Boolean).join("\n\n");
+      const msg = $("#copy-msg");
+      if (!txt) { msg.textContent = "No notes yet"; break; }
+      navigator.clipboard.writeText(txt).then(() => { msg.textContent = "Copied"; }, () => { msg.textContent = "Copy didn't work in this browser"; });
+      break;
     }
     case "hide-install": store.set("hideInstall", true); rerender(); break;
     case "shuffle": buildDeck(); rerender(); break;
@@ -485,6 +645,15 @@ document.addEventListener("touchend", (e) => {
   if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; sx = null;
   if (Math.abs(dx) > 70) document.querySelector(`[data-act="${dx > 0 ? "know" : "again"}"]`)?.click();
 }, { passive: true });
+const noteTimers = {};
+document.addEventListener("input", (e) => {
+  const t = e.target;
+  if (t.dataset.note !== undefined && st.subject) {
+    const key = t.dataset.note; const tag = document.getElementById("saved-" + key); if (tag) tag.textContent = "Saving…";
+    clearTimeout(noteTimers[key]); noteTimers[key] = setTimeout(() => { setNote(st.subject, key, t.value); if (tag) tag.textContent = "Saved on this device"; }, 500);
+  }
+  if (t.dataset.color) { const lk = local(); lk.colors = { ...(lk.colors || {}), [t.dataset.color]: t.value }; store.set("look", lk); const dot = t.closest(".color-row")?.querySelector(".dot"); if (dot) dot.style.setProperty("--c", t.value); renderChrome(); }
+});
 window.addEventListener("hashchange", route);
 
 /* ---------- boot ---------- */
@@ -494,7 +663,7 @@ async function load() {
     const fresh = await r.json();
     if (DATA && fresh.generatedAt === DATA.generatedAt) return;
     const first = !DATA; DATA = fresh;
-    if (!first) { rerender(); return; }
+    if (!first) { const a = document.activeElement; if (st.editing || (a && a.tagName === "TEXTAREA")) return; rerender(); return; }
   } catch (e) {
     if (DATA) return;
     $("#main").innerHTML = `<div class="page"><div class="empty"><h3>Can't load your study material</h3><p style="margin:0">Check your connection and open the app again.</p></div></div>`;
